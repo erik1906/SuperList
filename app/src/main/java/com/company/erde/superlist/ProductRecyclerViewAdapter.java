@@ -1,7 +1,17 @@
+package com.company.erde.superlist;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.company.erde.superlist.RealModels.Product;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollection;
 import io.realm.OrderedRealmCollectionChangeListener;
@@ -13,14 +23,18 @@ import io.realm.RealmResults;
  * Created by Erik on 09/10/2017.
  */
 
-public abstract class ProductRecyclerViewAdapter<T extends RealmModel, S extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<S> {
+
+public class ProductRecyclerViewAdapter<T extends RealmModel, S extends RecyclerView.ViewHolder>
+        extends RecyclerView.Adapter<ProductRecyclerViewAdapter.ProductViewHolder> {
+
 
     private final boolean hasAutoUpdates;
     private final boolean updateOnModification;
     private final OrderedRealmCollectionChangeListener listener;
+    private RecyclerViewClickListener recyclerViewClickListenerlistener;
+    private RealmResults<Product> result;
     @Nullable
-    private OrderedRealmCollection<T> adapterData;
+    private OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> adapterData;
 
     private OrderedRealmCollectionChangeListener createListener() {
         return new OrderedRealmCollectionChangeListener() {
@@ -60,8 +74,30 @@ public abstract class ProductRecyclerViewAdapter<T extends RealmModel, S extends
      *
      * //@see #RealmRecyclerViewAdapter(OrderedRealmCollection, boolean, boolean)
      */
-    public ProductRecyclerViewAdapter(@Nullable OrderedRealmCollection<T> data, boolean autoUpdate) {
+    public ProductRecyclerViewAdapter(@Nullable OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data, boolean autoUpdate, RecyclerViewClickListener listener, RealmResults product) {
         this(data, autoUpdate, true);
+        this.recyclerViewClickListenerlistener = listener;
+        this.result = product;
+    }
+
+
+    @Override
+    public RowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_card, parent, false);
+        //PlacesViewHolder placesViewHolder = new PlacesViewHolder(v);
+        return new RowViewHolder(v,recyclerViewClickListenerlistener);
+    }
+
+    @Override
+    public void onBindViewHolder(ProductViewHolder holder, int position) {
+        Product product = adapterData.get(position);
+        holder.name.setText(product.getName());
+
+        holder.price.setText(Float.toString(product.getPrice()));
+        Picasso.with(holder.itemView.getContext()).load(R.drawable.no_image).into(holder.ivImage);
+
+
     }
 
     /**
@@ -73,8 +109,8 @@ public abstract class ProductRecyclerViewAdapter<T extends RealmModel, S extends
      *                             deletions and insertions will trigger the updates. This param will be ignored if
      *                             {@code autoUpdate} is {@code false}.
      */
-    public ProductRecyclerViewAdapter(@Nullable OrderedRealmCollection<T> data, boolean autoUpdate,
-                                    boolean updateOnModification) {
+    public ProductRecyclerViewAdapter(@Nullable OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data, boolean autoUpdate,
+                                      boolean updateOnModification) {
         if (data != null && !data.isManaged())
             throw new IllegalStateException("Only use this adapter with managed RealmCollection, " +
                     "for un-managed lists you can just use the BaseRecyclerViewAdapter");
@@ -129,7 +165,7 @@ public abstract class ProductRecyclerViewAdapter<T extends RealmModel, S extends
      */
     @SuppressWarnings("WeakerAccess")
     @Nullable
-    public T getItem(int index) {
+    public com.company.erde.superlist.RealModels.Product getItem(int index) {
         //noinspection ConstantConditions
         return isDataValid() ? adapterData.get(index) : null;
     }
@@ -140,7 +176,7 @@ public abstract class ProductRecyclerViewAdapter<T extends RealmModel, S extends
      * @return adapter data.
      */
     @Nullable
-    public OrderedRealmCollection<T> getData() {
+    public OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> getData() {
         return adapterData;
     }
 
@@ -151,7 +187,7 @@ public abstract class ProductRecyclerViewAdapter<T extends RealmModel, S extends
      * @param data the new {@link OrderedRealmCollection} to display.
      */
     @SuppressWarnings("WeakerAccess")
-    public void updateData(@Nullable OrderedRealmCollection<T> data) {
+    public void updateData(@Nullable OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data) {
         if (hasAutoUpdates) {
             if (isDataValid()) {
                 //noinspection ConstantConditions
@@ -166,13 +202,13 @@ public abstract class ProductRecyclerViewAdapter<T extends RealmModel, S extends
         notifyDataSetChanged();
     }
 
-    private void addListener(@NonNull OrderedRealmCollection<T> data) {
+    private void addListener(@NonNull OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data) {
         if (data instanceof RealmResults) {
-            RealmResults<T> results = (RealmResults<T>) data;
+            RealmResults<com.company.erde.superlist.RealModels.Product> results = (RealmResults<com.company.erde.superlist.RealModels.Product>) data;
             //noinspection unchecked
             results.addChangeListener(listener);
         } else if (data instanceof RealmList) {
-            RealmList<T> list = (RealmList<T>) data;
+            RealmList<com.company.erde.superlist.RealModels.Product> list = (RealmList<com.company.erde.superlist.RealModels.Product>) data;
             //noinspection unchecked
             list.addChangeListener(listener);
         } else {
@@ -180,13 +216,13 @@ public abstract class ProductRecyclerViewAdapter<T extends RealmModel, S extends
         }
     }
 
-    private void removeListener(@NonNull OrderedRealmCollection<T> data) {
+    private void removeListener(@NonNull OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data) {
         if (data instanceof RealmResults) {
-            RealmResults<T> results = (RealmResults<T>) data;
+            RealmResults<com.company.erde.superlist.RealModels.Product> results = (RealmResults<com.company.erde.superlist.RealModels.Product>) data;
             //noinspection unchecked
             results.removeChangeListener(listener);
         } else if (data instanceof RealmList) {
-            RealmList<T> list = (RealmList<T>) data;
+            RealmList<com.company.erde.superlist.RealModels.Product> list = (RealmList<com.company.erde.superlist.RealModels.Product>) data;
             //noinspection unchecked
             list.removeChangeListener(listener);
         } else {
@@ -197,4 +233,47 @@ public abstract class ProductRecyclerViewAdapter<T extends RealmModel, S extends
     private boolean isDataValid() {
         return adapterData != null && adapterData.isValid();
     }
+
+
+    public interface  RecyclerViewClickListener{
+        void onClick(View view, int position);
+    }
+
+    public class RowViewHolder extends ProductRecyclerViewAdapter.ProductViewHolder implements View.OnClickListener{
+
+        private RecyclerViewClickListener listener;
+
+        public RowViewHolder(View itemView, RecyclerViewClickListener listener) {
+            super(itemView);
+            this.listener = listener;
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onClick(itemView, getAdapterPosition());
+        }
+
+
+    }
+
+    public static class ProductViewHolder extends RecyclerView.ViewHolder {
+
+        private CircleImageView ivImage;
+        private TextView price;
+        private TextView name;
+
+
+        public ProductViewHolder(View itemView) {
+            super(itemView);
+            ivImage = itemView.findViewById(R.id.ivImage);
+            price = itemView.findViewById(R.id.tvPrice);
+            name = itemView.findViewById(R.id.tvName);
+
+
+        }
+
+    }
+
 }

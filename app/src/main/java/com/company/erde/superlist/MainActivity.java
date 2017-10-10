@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.company.erde.superlist.Real.ProductCRUD;
 import com.company.erde.superlist.RealModels.Product;
@@ -67,8 +68,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         realm = Realm.getDefaultInstance();
-
-        ProductCRUD.read(realm);
+        Log.d("hay algo",ProductCRUD.selectFirst(realm).getName());
 
     }
 

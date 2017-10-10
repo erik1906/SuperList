@@ -14,7 +14,16 @@ public class Product extends RealmObject {
     @PrimaryKey
     private int id;
     private String name;
+    private float price;
     private String photoUrl;
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
 
     public int getId() {
         return id;
