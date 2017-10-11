@@ -1,13 +1,15 @@
-package com.company.erde.superlist;
+package com.company.erde.superlist.Adapters;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.company.erde.superlist.R;
 import com.company.erde.superlist.RealModels.Product;
 import com.squareup.picasso.Picasso;
 
@@ -27,12 +29,11 @@ import io.realm.RealmResults;
 public class ProductRecyclerViewAdapter<T extends RealmModel, S extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<ProductRecyclerViewAdapter.ProductViewHolder> {
 
-
+    private int selectedPos;
     private final boolean hasAutoUpdates;
     private final boolean updateOnModification;
     private final OrderedRealmCollectionChangeListener listener;
     private RecyclerViewClickListener recyclerViewClickListenerlistener;
-    private RealmResults<Product> result;
     @Nullable
     private OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> adapterData;
 
@@ -74,29 +75,9 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
      *
      * //@see #RealmRecyclerViewAdapter(OrderedRealmCollection, boolean, boolean)
      */
-    public ProductRecyclerViewAdapter(@Nullable OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data, boolean autoUpdate, RecyclerViewClickListener listener, RealmResults product) {
+    public ProductRecyclerViewAdapter(@Nullable OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data, boolean autoUpdate, RecyclerViewClickListener listener) {
         this(data, autoUpdate, true);
         this.recyclerViewClickListenerlistener = listener;
-        this.result = product;
-    }
-
-
-    @Override
-    public RowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_card, parent, false);
-        //PlacesViewHolder placesViewHolder = new PlacesViewHolder(v);
-        return new RowViewHolder(v,recyclerViewClickListenerlistener);
-    }
-
-    @Override
-    public void onBindViewHolder(ProductViewHolder holder, int position) {
-        Product product = adapterData.get(position);
-        holder.name.setText(product.getName());
-
-        holder.price.setText(Float.toString(product.getPrice()));
-        Picasso.with(holder.itemView.getContext()).load(R.drawable.no_image).into(holder.ivImage);
-
 
     }
 
@@ -239,7 +220,30 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
         void onClick(View view, int position);
     }
 
-    public class RowViewHolder extends ProductRecyclerViewAdapter.ProductViewHolder implements View.OnClickListener{
+
+    @Override
+    public RowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_card, parent, false);
+
+        return new RowViewHolder(v,recyclerViewClickListenerlistener);
+    }
+
+    @Override
+    public void onBindViewHolder(ProductViewHolder holder, int position) {
+        Product product = adapterData.get(position);
+        holder.name.setText(product.getName());
+        holder.id.setText(Integer.toString(product.getId()));
+        holder.price.setText("$"+Float.toString(product.getPrice()));
+        if(product.getPhotoUrl().equals("")) {
+            Picasso.with(holder.itemView.getContext()).load(R.drawable.no_image).into(holder.ivImage);
+        }else{
+            Picasso.with(holder.itemView.getContext()).load(product.getPhotoUrl()).into(holder.ivImage);
+        }
+
+    }
+
+    public class RowViewHolder extends ProductRecyclerViewAdapter.ProductViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
 
         private RecyclerViewClickListener listener;
 
@@ -248,14 +252,22 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
             this.listener = listener;
 
             itemView.setOnClickListener(this);
+            itemView.setOnCreateContextMenuListener(this);
         }
 
         @Override
         public void onClick(View v) {
             listener.onClick(itemView, getAdapterPosition());
+            //Toast.makeText(itemView.getContext(), "Seleccion "+ adapterData.get(getAdapterPosition()),Toast.LENGTH_SHORT).show();
         }
 
 
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            contextMenu.add(0, 0, 0, "Delete");
+            contextMenu.add(0, 1, 0, "Edit");
+            setPosition(getAdapterPosition());
+        }
     }
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -263,6 +275,7 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
         private CircleImageView ivImage;
         private TextView price;
         private TextView name;
+        private TextView id;
 
 
         public ProductViewHolder(View itemView) {
@@ -270,10 +283,19 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
             ivImage = itemView.findViewById(R.id.ivImage);
             price = itemView.findViewById(R.id.tvPrice);
             name = itemView.findViewById(R.id.tvName);
+            id = itemView.findViewById(R.id.tvIdProduct);
 
 
         }
 
+    }
+
+    public int getPosition() {
+        return selectedPos;
+    }
+
+    public void setPosition(int position) {
+        this.selectedPos = position;
     }
 
 }

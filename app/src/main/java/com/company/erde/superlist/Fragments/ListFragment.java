@@ -1,54 +1,54 @@
-package com.company.erde.superlist;
+package com.company.erde.superlist.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.company.erde.superlist.Real.ProductCRUD;
-import com.company.erde.superlist.RealModels.Product;
-
-import io.realm.Realm;
+import com.company.erde.superlist.R;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ProductFragments.OnFragmentInteractionListener} interface
+ * {@link ListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ProductFragments#newInstance} factory method to
+ * Use the {@link ListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProductFragments extends Fragment {
+public class ListFragment extends Fragment {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
-    private RecyclerView recyclerView;
-    private LinearLayoutManager linearLayoutManager;
-    private  Realm realm;
-
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    public ProductFragments() {
+    public ListFragment() {
         // Required empty public constructor
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     * @return A new instance of fragment ProductFragments.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment ListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProductFragments newInstance(String name) {
-        ProductFragments fragment = new ProductFragments();
+    public static ListFragment newInstance(String param1, String param2) {
+        ListFragment fragment = new ListFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,41 +56,17 @@ public class ProductFragments extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        realm = Realm.getDefaultInstance();
-
-        recyclerView = view.findViewById(R.id.rvProduct);
-        recyclerView.setHasFixedSize(true);
-
-        linearLayoutManager = new LinearLayoutManager(this.getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        ProductRecyclerViewAdapter adapter = new ProductRecyclerViewAdapter(ProductCRUD.orderedRealmCollection(realm), true, new ProductRecyclerViewAdapter.RecyclerViewClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-
-
-            }
-        }, ProductCRUD.selectAll(realm));
-
-        recyclerView.setAdapter(adapter);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_product, container, false);
-
-
         // Inflate the layout for this fragment
-
+        return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -114,7 +90,7 @@ public class ProductFragments extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-//        mListener = null;
+        mListener = null;
     }
 
     /**

@@ -1,18 +1,24 @@
-package com.company.erde.superlist;
+package com.company.erde.superlist.Activities;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
-import com.company.erde.superlist.Real.ProductCRUD;
-import com.company.erde.superlist.RealModels.Product;
+import com.company.erde.superlist.Fragments.HistoryFragment;
+import com.company.erde.superlist.Fragments.ListFragment;
+import com.company.erde.superlist.Fragments.ProductFragments;
+import com.company.erde.superlist.R;
+import com.company.erde.superlist.Realm.ProductCRUD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +28,9 @@ import io.realm.Realm;
 public class MainActivity extends AppCompatActivity {
 
     private Realm realm;
+    private FloatingActionButton fbProduct;
+    private FloatingActionButton fbList;
+    private FloatingActionButton fbHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +46,13 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout =  findViewById(R.id.tab);
         tabLayout.setupWithViewPager(viewPager);
 
+        fbProduct = findViewById(R.id.fbProduct);
+        fbHistory = findViewById(R.id.fbHistory);
+        fbList = findViewById(R.id.fbList);
+        fbProduct.hide();
+        fbHistory.hide();
+        fbList.show();
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -45,13 +61,19 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (tab.getPosition()) {
                     case 0:
-                        //showToast("One");
+                        fbProduct.hide();
+                        fbHistory.hide();
+                        fbList.show();
                         break;
                     case 1:
-                        //showToast("Two");
+                        fbProduct.show();
+                        fbHistory.hide();
+                        fbList.hide();
                         break;
                     case 2:
-                        //showToast("Three");
+                        fbProduct.hide();
+                        fbList.hide();
+                        fbHistory.show();
                         break;
                 }
             }
@@ -68,18 +90,41 @@ public class MainActivity extends AppCompatActivity {
         });
 
         realm = Realm.getDefaultInstance();
-        Log.d("hay algo",ProductCRUD.selectFirst(realm).getName());
 
+        //ProductCRUD.dropTable(realm);
+
+        fbList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        fbProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, CreateUpdateProductActivity.class);
+                startActivity(i);
+                //Toast.makeText(view.getContext(),"product float",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        fbHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(),"history float",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        adapter.addFrag(new ListFragment(),"Product");
+        adapter.addFrag(new ListFragment(),"Lists");
         viewPager.setAdapter(adapter);
         adapter.addFrag(new ProductFragments(),"Product");
         viewPager.setAdapter(adapter);
-        adapter.addFrag(new HistoryFragment(),"Product");
+        adapter.addFrag(new HistoryFragment(),"History");
         viewPager.setAdapter(adapter);
     }
 
