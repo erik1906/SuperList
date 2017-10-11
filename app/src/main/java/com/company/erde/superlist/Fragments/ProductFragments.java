@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.company.erde.superlist.Activities.CreateUpdateProductActivity;
 import com.company.erde.superlist.Activities.MainActivity;
+import com.company.erde.superlist.Activities.ProductDetailsActivity;
 import com.company.erde.superlist.Adapters.ProductRecyclerViewAdapter;
 import com.company.erde.superlist.R;
 import com.company.erde.superlist.Realm.ProductCRUD;
@@ -115,9 +116,11 @@ public class ProductFragments extends Fragment {
         adapter= new ProductRecyclerViewAdapter(productData, true, new ProductRecyclerViewAdapter.RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
-                productData.get(position);
-                //TODO: Start activity
-                Toast.makeText(getContext(),"Seleccion "+ position,Toast.LENGTH_SHORT).show();
+                Product p = (Product) productData.get(position);
+                Intent i = new Intent(getContext(), ProductDetailsActivity.class);
+                i.putExtra("id", p.getId());
+                startActivity(i);
+                //Toast.makeText(getContext(),"Seleccion "+ position,Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -169,7 +172,6 @@ public class ProductFragments extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 

@@ -1,16 +1,11 @@
 package com.company.erde.superlist.Activities;
 
-import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +17,6 @@ import com.company.erde.superlist.R;
 import com.company.erde.superlist.RealModels.Product;
 import com.company.erde.superlist.Realm.ProductCRUD;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 import io.realm.Realm;
 
@@ -45,7 +38,7 @@ public class CreateUpdateProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_update_product);
 
         ibPicture = findViewById(R.id.ibPicture);
-        etName = findViewById(R.id.etProductName);
+        etName = findViewById(R.id.tvProductName);
         etPrice = findViewById(R.id.etPrice);
 
         realm = Realm.getDefaultInstance();

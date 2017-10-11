@@ -12,6 +12,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="ToolBarStyle" parent="AppTheme">
 
         <item name="android:textColorPrimary">@android:color/white</item>
