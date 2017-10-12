@@ -13,10 +13,20 @@ public class SuperList extends RealmObject {
     @PrimaryKey
     private int id;
     private String name;
+    private float total;
     private RealmList<ListProducts> products;
 
     public int getId() {
         return id;
+    }
+
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
     }
 
     public void setId(int id) {

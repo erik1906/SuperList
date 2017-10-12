@@ -119,8 +119,9 @@ public class MainActivity extends AppCompatActivity {
                         m_Text = input.getText().toString();
                         SuperList superList = new SuperList();
                         superList.setName(m_Text);
-
+                        superList.setTotal(0.0f);
                         SuperListCRUD.insert(realm, superList);
+
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

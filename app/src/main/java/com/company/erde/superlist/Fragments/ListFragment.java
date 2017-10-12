@@ -151,7 +151,6 @@ public class ListFragment extends Fragment {
 
         registerForContextMenu(recyclerView);
         final OrderedRealmCollection superLists = SuperListCRUD.orderedRealmCollection(realm);
-        Log.d("firstone", SuperListCRUD.selectFirst(realm).getName());
         adapter = new ListRecyclerViewAdapter(superLists, true, new ListRecyclerViewAdapter.RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
