@@ -1,14 +1,34 @@
 package com.company.erde.superlist.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.company.erde.superlist.Activities.CreateUpdateProductActivity;
+import com.company.erde.superlist.Activities.ProductDetailsActivity;
+import com.company.erde.superlist.Activities.ProductList;
+import com.company.erde.superlist.Adapters.ListRecyclerViewAdapter;
+import com.company.erde.superlist.Adapters.ProductRecyclerViewAdapter;
 import com.company.erde.superlist.R;
+import com.company.erde.superlist.RealModels.Product;
+import com.company.erde.superlist.RealModels.SuperList;
+import com.company.erde.superlist.Realm.SuperListCRUD;
+
+import io.realm.OrderedRealmCollection;
+import io.realm.Realm;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -20,16 +40,13 @@ import com.company.erde.superlist.R;
  * create an instance of this fragment.
  */
 public class ListFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
+    private  Realm realm;
+    private ListRecyclerViewAdapter adapter;
 
     public ListFragment() {
         // Required empty public constructor
@@ -46,10 +63,6 @@ public class ListFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     public static ListFragment newInstance(String param1, String param2) {
         ListFragment fragment = new ListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -57,8 +70,6 @@ public class ListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -69,7 +80,6 @@ public class ListFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -104,7 +114,54 @@ public class ListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int position = -1;
+
+        try {
+            position = adapter.getPosition();
+        } catch (Exception e) {
+            Log.d(TAG, e.getLocalizedMessage(), e);
+            return super.onContextItemSelected(item);
+        }
+        SuperList superList = (SuperList) adapter.getData().get(position);
+        switch (item.getItemId()) {
+            case 0:
+                realm = Realm.getDefaultInstance();
+                SuperListCRUD.delete(realm, superList.getId());
+                //Toast.makeText(getContext(),position+" Delete",Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        realm = Realm.getDefaultInstance();
+
+        recyclerView = view.findViewById(R.id.rvLists);
+        recyclerView.setHasFixedSize(true);
+
+        linearLayoutManager = new LinearLayoutManager(this.getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        registerForContextMenu(recyclerView);
+        final OrderedRealmCollection superLists = SuperListCRUD.orderedRealmCollection(realm);
+        Log.d("firstone", SuperListCRUD.selectFirst(realm).getName());
+        adapter = new ListRecyclerViewAdapter(superLists, true, new ListRecyclerViewAdapter.RecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Intent i = new Intent(view.getContext(), ProductList.class);
+                i.putExtra("id", adapter.getItem(position).getId() );
+                startActivity(i);
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
+    }
+
 }

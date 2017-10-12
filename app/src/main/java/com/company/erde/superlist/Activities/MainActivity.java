@@ -1,5 +1,6 @@
 package com.company.erde.superlist.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -7,18 +8,23 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.company.erde.superlist.Fragments.HistoryFragment;
 import com.company.erde.superlist.Fragments.ListFragment;
 import com.company.erde.superlist.Fragments.ProductFragments;
 import com.company.erde.superlist.R;
+import com.company.erde.superlist.RealModels.SuperList;
 import com.company.erde.superlist.Realm.ProductCRUD;
+import com.company.erde.superlist.Realm.SuperListCRUD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fbProduct;
     private FloatingActionButton fbList;
     private FloatingActionButton fbHistory;
+    private String m_Text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +103,34 @@ public class MainActivity extends AppCompatActivity {
         fbList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setTitle("Indica el nombre de la lista.");
 
+                // Set up the input
+                final EditText input = new EditText(view.getContext());
+               // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        m_Text = input.getText().toString();
+                        SuperList superList = new SuperList();
+                        superList.setName(m_Text);
+
+                        SuperListCRUD.insert(realm, superList);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
             }
         });
 

@@ -1,8 +1,11 @@
 package com.company.erde.superlist.Adapters;
 
+
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,32 +13,28 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.company.erde.superlist.R;
-import com.company.erde.superlist.RealModels.Product;
-import com.squareup.picasso.Picasso;
+import com.company.erde.superlist.RealModels.SuperList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.OrderedCollectionChangeSet;
 import io.realm.OrderedRealmCollection;
 import io.realm.OrderedRealmCollectionChangeListener;
 import io.realm.RealmList;
-import io.realm.RealmModel;
 import io.realm.RealmResults;
 
 /**
- * Created by Erik on 09/10/2017.
+ * Created by Erik on 11/10/2017.
  */
 
+public class ListRecyclerViewAdapter<superList extends SuperList, rowViewHolderList extends ListRecyclerViewAdapter.ViewHolder>
+        extends RecyclerView.Adapter<ListRecyclerViewAdapter.ViewHolder> {
 
-public class ProductRecyclerViewAdapter<T extends RealmModel, S extends RecyclerView.ViewHolder>
-        extends RecyclerView.Adapter<ProductRecyclerViewAdapter.ProductViewHolder> {
-
-    private int selectedPos;
     private final boolean hasAutoUpdates;
     private final boolean updateOnModification;
     private final OrderedRealmCollectionChangeListener listener;
-    private RecyclerViewClickListener recyclerViewClickListenerlistener;
+    private final RecyclerViewClickListener recyclerViewClickListenerlistener;
     @Nullable
-    private OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> adapterData;
+    private OrderedRealmCollection<superList> adapterData;
+    private int selectedPos;
 
     private OrderedRealmCollectionChangeListener createListener() {
         return new OrderedRealmCollectionChangeListener() {
@@ -73,12 +72,10 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
     /**
      * This is equivalent to {@code ListRecyclerViewAdapter(data, autoUpdate, true)}.
      *
-     * //@see #ListRecyclerViewAdapter(OrderedRealmCollection, boolean, boolean)
+     * @see #ListRecyclerViewAdapter(OrderedRealmCollection, boolean, boolean, RecyclerViewClickListener)
      */
-    public ProductRecyclerViewAdapter(@Nullable OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data, boolean autoUpdate, RecyclerViewClickListener listener) {
-        this(data, autoUpdate, true);
-        this.recyclerViewClickListenerlistener = listener;
-
+    public ListRecyclerViewAdapter(@Nullable OrderedRealmCollection<superList> data, boolean autoUpdate, RecyclerViewClickListener listener) {
+        this(data, autoUpdate, true, listener);
     }
 
     /**
@@ -90,8 +87,8 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
      *                             deletions and insertions will trigger the updates. This param will be ignored if
      *                             {@code autoUpdate} is {@code false}.
      */
-    public ProductRecyclerViewAdapter(@Nullable OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data, boolean autoUpdate,
-                                      boolean updateOnModification) {
+    public ListRecyclerViewAdapter(@Nullable OrderedRealmCollection<superList> data, boolean autoUpdate,
+                                   boolean updateOnModification, RecyclerViewClickListener listener) {
         if (data != null && !data.isManaged())
             throw new IllegalStateException("Only use this adapter with managed RealmCollection, " +
                     "for un-managed lists you can just use the BaseRecyclerViewAdapter");
@@ -99,6 +96,7 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
         this.hasAutoUpdates = autoUpdate;
         this.listener = hasAutoUpdates ? createListener() : null;
         this.updateOnModification = updateOnModification;
+        this.recyclerViewClickListenerlistener = listener;
     }
 
     @Override
@@ -146,7 +144,7 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
      */
     @SuppressWarnings("WeakerAccess")
     @Nullable
-    public com.company.erde.superlist.RealModels.Product getItem(int index) {
+    public superList getItem(int index) {
         //noinspection ConstantConditions
         return isDataValid() ? adapterData.get(index) : null;
     }
@@ -157,7 +155,7 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
      * @return adapter data.
      */
     @Nullable
-    public OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> getData() {
+    public OrderedRealmCollection<superList> getData() {
         return adapterData;
     }
 
@@ -168,7 +166,7 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
      * @param data the new {@link OrderedRealmCollection} to display.
      */
     @SuppressWarnings("WeakerAccess")
-    public void updateData(@Nullable OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data) {
+    public void updateData(@Nullable OrderedRealmCollection<superList> data) {
         if (hasAutoUpdates) {
             if (isDataValid()) {
                 //noinspection ConstantConditions
@@ -183,13 +181,13 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
         notifyDataSetChanged();
     }
 
-    private void addListener(@NonNull OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data) {
+    private void addListener(@NonNull OrderedRealmCollection<superList> data) {
         if (data instanceof RealmResults) {
-            RealmResults<com.company.erde.superlist.RealModels.Product> results = (RealmResults<com.company.erde.superlist.RealModels.Product>) data;
+            RealmResults<superList> results = (RealmResults<superList>) data;
             //noinspection unchecked
             results.addChangeListener(listener);
         } else if (data instanceof RealmList) {
-            RealmList<com.company.erde.superlist.RealModels.Product> list = (RealmList<com.company.erde.superlist.RealModels.Product>) data;
+            RealmList<superList> list = (RealmList<superList>) data;
             //noinspection unchecked
             list.addChangeListener(listener);
         } else {
@@ -197,13 +195,13 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
         }
     }
 
-    private void removeListener(@NonNull OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data) {
+    private void removeListener(@NonNull OrderedRealmCollection<superList> data) {
         if (data instanceof RealmResults) {
-            RealmResults<com.company.erde.superlist.RealModels.Product> results = (RealmResults<com.company.erde.superlist.RealModels.Product>) data;
+            RealmResults<superList> results = (RealmResults<superList>) data;
             //noinspection unchecked
             results.removeChangeListener(listener);
         } else if (data instanceof RealmList) {
-            RealmList<com.company.erde.superlist.RealModels.Product> list = (RealmList<com.company.erde.superlist.RealModels.Product>) data;
+            RealmList<superList> list = (RealmList<superList>) data;
             //noinspection unchecked
             list.removeChangeListener(listener);
         } else {
@@ -215,40 +213,34 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
         return adapterData != null && adapterData.isValid();
     }
 
-
     public interface  RecyclerViewClickListener{
         void onClick(View view, int position);
     }
 
+    @Override
+    public RowViewHolderList onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.lists_card, parent, false);
+
+        return new RowViewHolderList(v, recyclerViewClickListenerlistener);
+    }
+
 
 
     @Override
-    public RowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public void onBindViewHolder( ViewHolder holder, int position) {
+        superList superList = adapterData.get(position);
+        Log.d("pos","pos"+position);
+        holder.id.setText(Integer.toString(superList.getId()));
+        holder.name.setText(superList.getName());
 
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_card, parent, false);
-
-        return new RowViewHolder(v,recyclerViewClickListenerlistener);
-    }
-
-    @Override
-    public void onBindViewHolder(ProductViewHolder holder, int position) {
-        Product product = adapterData.get(position);
-        holder.name.setText(product.getName());
-        holder.id.setText(Integer.toString(product.getId()));
-        holder.price.setText("$"+Float.toString(product.getPrice()));
-        if(product.getPhotoUrl().equals("")) {
-            Picasso.with(holder.itemView.getContext()).load(R.drawable.no_image).into(holder.ivImage);
-        }else{
-            Picasso.with(holder.itemView.getContext()).load(product.getPhotoUrl()).into(holder.ivImage);
-        }
 
     }
-
-    public class RowViewHolder extends ProductRecyclerViewAdapter.ProductViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
+    public class RowViewHolderList extends ListRecyclerViewAdapter.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
 
         private RecyclerViewClickListener listener;
 
-        public RowViewHolder(View itemView, RecyclerViewClickListener listener) {
+        public RowViewHolderList(View itemView, RecyclerViewClickListener listener) {
             super(itemView);
             this.listener = listener;
 
@@ -266,31 +258,27 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
         @Override
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
             contextMenu.add(0, 0, 0, "Delete");
-            contextMenu.add(0, 1, 0, "Edit");
+            //contextMenu.add(0, 1, 0, "Edit");
             setPosition(getAdapterPosition());
         }
     }
 
-    public static class ProductViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private CircleImageView ivImage;
-        private TextView price;
         private TextView name;
         private TextView id;
 
 
-        public ProductViewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            ivImage = itemView.findViewById(R.id.ivImage);
-            price = itemView.findViewById(R.id.tvPrice);
-            name = itemView.findViewById(R.id.tvName);
-            id = itemView.findViewById(R.id.tvIdProduct);
+
+            name = itemView.findViewById(R.id.tvListName);
+            id = itemView.findViewById(R.id.tvListId);
 
 
         }
 
     }
-
     public int getPosition() {
         return selectedPos;
     }
@@ -298,5 +286,4 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
     public void setPosition(int position) {
         this.selectedPos = position;
     }
-
 }

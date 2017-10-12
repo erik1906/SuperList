@@ -19,6 +19,7 @@
         </activity>
         <activity android:name=".Activities.CreateUpdateProductActivity" />
         <activity android:name=".Activities.ProductDetailsActivity" />
+        <activity android:name=".Activities.ProductList"></activity>
     </application>
 
 </manifest>
