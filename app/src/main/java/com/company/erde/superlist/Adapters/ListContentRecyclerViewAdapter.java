@@ -7,7 +7,6 @@ package com.company.erde.superlist.Adapters;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -289,7 +288,7 @@ public class ListContentRecyclerViewAdapter<contentList extends ListProducts, ro
 
             ivImage = itemView.findViewById(R.id.ivImage);
             price = itemView.findViewById(R.id.tvPrice);
-            name = itemView.findViewById(R.id.tvName);
+            name = itemView.findViewById(R.id.tvCompra);
             id = itemView.findViewById(R.id.tvIdProduct);
             total = itemView.findViewById(R.id.tvTotal);
 

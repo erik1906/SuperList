@@ -229,7 +229,6 @@ public class ListRecyclerViewAdapter<superList extends SuperList, rowViewHolderL
     @Override
     public void onBindViewHolder( ViewHolder holder, int position) {
         superList superList = adapterData.get(position);
-        Log.d("pos","pos"+superList.getId());
         holder.id.setText(Integer.toString(superList.getId()));
         holder.name.setText(superList.getName());
 

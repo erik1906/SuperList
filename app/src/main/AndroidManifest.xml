@@ -3,8 +3,8 @@
     package="com.company.erde.superlist">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".App"
@@ -24,17 +24,19 @@
         <activity android:name=".Activities.CreateUpdateProductActivity" />
         <activity android:name=".Activities.ProductDetailsActivity" />
         <activity android:name=".Activities.ProductList" />
-        <activity android:name=".Activities.SelectActivity"></activity>
+        <activity android:name=".Activities.SelectActivity" />
+
         <provider
-            android:authorities="com.company.erde.superlist.fileprovider"
             android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.company.erde.superlist.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
+
+        <activity android:name=".Activities.HistoryProductActivity"></activity>
     </application>
 
 </manifest>

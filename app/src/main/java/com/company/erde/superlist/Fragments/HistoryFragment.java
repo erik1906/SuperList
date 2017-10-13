@@ -1,14 +1,27 @@
 package com.company.erde.superlist.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.company.erde.superlist.Activities.HistoryProductActivity;
+import com.company.erde.superlist.Activities.ProductList;
+import com.company.erde.superlist.Adapters.HistoryContentRecyclerViewAdapter;
+import com.company.erde.superlist.Adapters.ListRecyclerViewAdapter;
 import com.company.erde.superlist.R;
+import com.company.erde.superlist.Realm.HistoryCRUD;
+import com.company.erde.superlist.Realm.SuperListCRUD;
+
+import io.realm.OrderedRealmCollection;
+import io.realm.Realm;
 
 
 /**
@@ -20,14 +33,16 @@ import com.company.erde.superlist.R;
  * create an instance of this fragment.
  */
 public class HistoryFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
+    private Realm realm;
+    private HistoryContentRecyclerViewAdapter adapter;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -43,7 +58,7 @@ public class HistoryFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment HistoryFragment.
      */
-    // TODO: Rename and change types and number of parameters
+
     public static HistoryFragment newInstance(String param1, String param2) {
         HistoryFragment fragment = new HistoryFragment();
         Bundle args = new Bundle();
@@ -57,8 +72,7 @@ public class HistoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
@@ -69,7 +83,7 @@ public class HistoryFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_history, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -104,7 +118,32 @@ public class HistoryFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        realm = Realm.getDefaultInstance();
+
+        recyclerView = view.findViewById(R.id.rvHistory);
+        recyclerView.setHasFixedSize(true);
+
+        linearLayoutManager = new LinearLayoutManager(this.getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        registerForContextMenu(recyclerView);
+        final OrderedRealmCollection superLists = HistoryCRUD.orderedRealmCollection(realm);
+        adapter = new HistoryContentRecyclerViewAdapter(superLists, true, new HistoryContentRecyclerViewAdapter.RecyclerViewClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Intent i = new Intent(view.getContext(), HistoryProductActivity.class);
+                i.putExtra("id", adapter.getItem(position).getId() );
+                startActivity(i);
+            }
+        });
+
+        recyclerView.setAdapter(adapter);
     }
 }

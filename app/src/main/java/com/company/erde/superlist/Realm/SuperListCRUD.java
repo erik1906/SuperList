@@ -39,6 +39,7 @@ public class SuperListCRUD {
                 superList.setProducts(realmList);
                 superList.setId(nextId);
                 superList.setTotal(0.0f);
+                superList.setProductCount(0);
                 realm.copyToRealm(superList);
             }
         });
@@ -88,6 +89,15 @@ public class SuperListCRUD {
             @Override
             public void execute(Realm realm) {
                 superList.setTotal(total);
+                realm.copyToRealmOrUpdate(superList);
+            }
+        });
+    }
+    public static void updateCount(Realm realm, final SuperList superList, final int count){
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                superList.setProductCount(count);
                 realm.copyToRealmOrUpdate(superList);
             }
         });

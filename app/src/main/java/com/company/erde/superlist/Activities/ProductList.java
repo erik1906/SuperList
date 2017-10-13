@@ -23,6 +23,7 @@ import com.company.erde.superlist.R;
 import com.company.erde.superlist.RealModels.ListProducts;
 import com.company.erde.superlist.RealModels.Product;
 import com.company.erde.superlist.RealModels.SuperList;
+import com.company.erde.superlist.Realm.HistoryCRUD;
 import com.company.erde.superlist.Realm.ListProductsCRUD;
 import com.company.erde.superlist.Realm.ProductCRUD;
 import com.company.erde.superlist.Realm.SuperListCRUD;
@@ -48,6 +49,7 @@ public class ProductList extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
 
     private Product product;
+    private SuperList superList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +59,7 @@ public class ProductList extends AppCompatActivity {
 
         listid = getIntent().getIntExtra("id",-1);
 
-        final SuperList superList = SuperListCRUD.select(realm, listid);
+        superList = SuperListCRUD.select(realm, listid);
 
         bSelect = findViewById(R.id.bSelect);
         bAdd = findViewById(R.id.ibAdd);
@@ -131,8 +133,10 @@ public class ProductList extends AppCompatActivity {
                     SuperListCRUD.insertItem(realm, listProducts);
 
                     float total = superList.getTotal() + (product.getPrice() * numberPicker.getValue());
+                    int totalProduct = superList.getProductCount() + numberPicker.getValue();
 
                     SuperListCRUD.updateTotal(realm, superList, total);
+                    SuperListCRUD.updateCount(realm, superList, totalProduct);
 
                     tvTotal.setText("$" + total);
 
@@ -166,6 +170,9 @@ public class ProductList extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.buyList:
                 Snackbar.make(this.findViewById(android.R.id.content),"Toca buy",Snackbar.LENGTH_LONG).show();
+                HistoryCRUD.insert(realm,SuperListCRUD.select(realm,superList.getId()));
+                SuperListCRUD.delete(realm,superList.getId());
+                this.finish();
 
                 return true;
             default:

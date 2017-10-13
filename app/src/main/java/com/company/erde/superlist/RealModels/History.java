@@ -1,33 +1,26 @@
 package com.company.erde.superlist.RealModels;
 
+import java.util.Date;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Erik on 11/10/2017.
+ * Created by Erik on 13/10/2017.
  */
 
-public class SuperList extends RealmObject {
-
+public class History extends RealmObject{
     @PrimaryKey
     private int id;
     private String name;
+    private String date;
     private float total;
     private int productCount;
     private RealmList<ListProducts> products;
 
     public int getId() {
         return id;
-    }
-
-
-    public float getTotal() {
-        return total;
-    }
-
-    public void setTotal(float total) {
-        this.total = total;
     }
 
     public void setId(int id) {
@@ -42,12 +35,20 @@ public class SuperList extends RealmObject {
         this.name = name;
     }
 
-    public RealmList<ListProducts>  getProducts() {
-        return products;
+    public String getDate() {
+        return date;
     }
 
-    public void setProducts(RealmList<ListProducts> products) {
-        this.products = products;
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
     }
 
     public int getProductCount() {
@@ -56,5 +57,13 @@ public class SuperList extends RealmObject {
 
     public void setProductCount(int productCount) {
         this.productCount = productCount;
+    }
+
+    public RealmList<ListProducts> getProducts() {
+        return products;
+    }
+
+    public void setProducts(RealmList<ListProducts> products) {
+        this.products = products;
     }
 }
