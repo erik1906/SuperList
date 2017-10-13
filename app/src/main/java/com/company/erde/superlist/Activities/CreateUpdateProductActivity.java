@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
@@ -68,10 +69,12 @@ public class CreateUpdateProductActivity extends AppCompatActivity {
 
 
 
+
         int id = getIntent().getIntExtra("id",-1);
         if(id == -1) {
             toolbar.setTitle("Agregar nuevo producto");
             create=true;
+            uri = "";
         }else{
             create=false;
             toolbar.setTitle("Modificar producto");
@@ -79,6 +82,7 @@ public class CreateUpdateProductActivity extends AppCompatActivity {
             product = ProductCRUD.select(realm, id);
             etPrice.setText( String.valueOf(product.getPrice()));
             etName.setText( product.getName());
+            uri = product.getPhotoUrl();
             if(product.getPhotoUrl().equals("")){
                 Picasso.with(this).load(R.drawable.no_img).into(ibPicture);
             }else{
@@ -87,8 +91,6 @@ public class CreateUpdateProductActivity extends AppCompatActivity {
         }
         setSupportActionBar(toolbar);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,21 +171,32 @@ public class CreateUpdateProductActivity extends AppCompatActivity {
             case R.id.doneProduct:
                 if(create) {
                     //Toast.makeText(this,"",Toast.LENGTH_SHORT).show();
-                    Product product = new Product();
-                    product.setPrice(Float.valueOf(etPrice.getText().toString()));
-                    product.setName(etName.getText().toString());
-                    product.setPhotoUrl(uri);
+                    if(etName.getText().toString().isEmpty() || etPrice.getText().toString().isEmpty()){
+                        Snackbar.make(this.findViewById(android.R.id.content),"No se puden guardar con campos vacios.", Snackbar.LENGTH_LONG).show();
 
-                    ProductCRUD.insert(realm, product);
+                    }else {
+                        Product product = new Product();
+                        product.setPrice(Float.valueOf(etPrice.getText().toString()));
+                        product.setName(etName.getText().toString());
+                        product.setPhotoUrl(uri);
+
+                        ProductCRUD.insert(realm, product);
+                        this.finish();
+                    }
                 }else {
-                    Product product = new Product();
-                    product.setPrice(Float.valueOf(etPrice.getText().toString()));
-                    product.setName(etName.getText().toString());
-                    product.setPhotoUrl(uri);
-                    product.setId(idproduct);
-                    ProductCRUD.update(realm, product);
+                    if(etName.getText().toString().isEmpty() || etPrice.getText().toString().isEmpty()){
+                        Snackbar.make(this.findViewById(android.R.id.content),"No se puden guardar con campos vacios.", Snackbar.LENGTH_LONG).show();
+                    }else {
+                        Product product = new Product();
+                        product.setPrice(Float.valueOf(etPrice.getText().toString()));
+                        product.setName(etName.getText().toString());
+                        product.setPhotoUrl(uri);
+                        product.setId(idproduct);
+                        ProductCRUD.update(realm, product);
+                        this.finish();
+                    }
                 }
-                this.finish();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

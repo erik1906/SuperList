@@ -238,14 +238,13 @@ public class ListContentRecyclerViewAdapter<contentList extends ListProducts, ro
         float total = product.getPrice() * content.getQuantity();
         holder.name.setText(product.getName());
         holder.id.setText(Integer.toString(product.getId()));
-        holder.price.setText("$"+Float.toString(product.getPrice()));
+        holder.price.setText(content.getQuantity()+" de $"+Float.toString(product.getPrice()));
         holder.total.setText("$"+Float.toString(total));
         if(product.getPhotoUrl().equals("")) {
             Picasso.with(holder.itemView.getContext()).load(R.drawable.no_image).into(holder.ivImage);
         }else{
             Picasso.with(holder.itemView.getContext()).load(product.getPhotoUrl()).into(holder.ivImage);
         }
-        holder.total.setText(String.valueOf(total));
 
 
     }

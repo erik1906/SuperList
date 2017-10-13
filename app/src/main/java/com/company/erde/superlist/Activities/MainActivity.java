@@ -3,6 +3,7 @@ package com.company.erde.superlist.Activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -99,14 +100,15 @@ public class MainActivity extends AppCompatActivity {
 
         fbList.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
+                m_Text="";
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                 builder.setTitle("Indica el nombre de la lista.");
 
                 // Set up the input
                 final EditText input = new EditText(view.getContext());
                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+                input.setInputType(InputType.TYPE_CLASS_TEXT |  InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
                 builder.setView(input);
 
                 // Set up the buttons
@@ -114,10 +116,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         m_Text = input.getText().toString();
-                        SuperList superList = new SuperList();
-                        superList.setName(m_Text);
-                        SuperListCRUD.insert(realm, superList);
-
+                        if(m_Text.equals("")){
+                            Toast.makeText(view.getContext(),"Favor de agregar nombre a la lista",Toast.LENGTH_LONG).show();
+                        }else {
+                            SuperList superList = new SuperList();
+                            superList.setName(m_Text);
+                            SuperListCRUD.insert(realm, superList);
+                        }
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
