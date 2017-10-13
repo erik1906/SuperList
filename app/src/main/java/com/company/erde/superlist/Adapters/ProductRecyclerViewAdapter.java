@@ -37,6 +37,8 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
     @Nullable
     private OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> adapterData;
 
+    private boolean select;
+
     private OrderedRealmCollectionChangeListener createListener() {
         return new OrderedRealmCollectionChangeListener() {
             @Override
@@ -71,9 +73,9 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
     }
 
     /**
-     * This is equivalent to {@code ListRecyclerViewAdapter(data, autoUpdate, true)}.
+     * This is equivalent to {@code ListContentRecyclerViewAdapter(data, autoUpdate, true)}.
      *
-     * //@see #ListRecyclerViewAdapter(OrderedRealmCollection, boolean, boolean)
+     * //@see #ListContentRecyclerViewAdapter(OrderedRealmCollection, boolean, boolean)
      */
     public ProductRecyclerViewAdapter(@Nullable OrderedRealmCollection<com.company.erde.superlist.RealModels.Product> data, boolean autoUpdate, RecyclerViewClickListener listener) {
         this(data, autoUpdate, true);
@@ -237,9 +239,9 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
         holder.id.setText(Integer.toString(product.getId()));
         holder.price.setText("$"+Float.toString(product.getPrice()));
         if(product.getPhotoUrl().equals("")) {
-            Picasso.with(holder.itemView.getContext()).load(R.drawable.no_image).into(holder.ivImage);
+            Picasso.with(holder.itemView.getContext()).load(R.drawable.no_image).noFade().into(holder.ivImage);
         }else{
-            Picasso.with(holder.itemView.getContext()).load(product.getPhotoUrl()).into(holder.ivImage);
+            Picasso.with(holder.itemView.getContext()).load(product.getPhotoUrl()).noFade().into(holder.ivImage);
         }
 
     }
@@ -265,9 +267,11 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
 
         @Override
         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            contextMenu.add(0, 0, 0, "Delete");
-            contextMenu.add(0, 1, 0, "Edit");
-            setPosition(getAdapterPosition());
+            if(select){}else {
+                contextMenu.add(0, 0, 0, "Delete");
+                contextMenu.add(0, 1, 0, "Edit");
+                setPosition(getAdapterPosition());
+            }
         }
     }
 
@@ -282,13 +286,17 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
         public ProductViewHolder(View itemView) {
             super(itemView);
             ivImage = itemView.findViewById(R.id.ivImage);
-            price = itemView.findViewById(R.id.tvPrice);
+            price = itemView.findViewById(R.id.tvTotal);
             name = itemView.findViewById(R.id.tvName);
             id = itemView.findViewById(R.id.tvIdProduct);
 
 
         }
 
+    }
+
+    public void setSelect(boolean select) {
+        this.select = select;
     }
 
     public int getPosition() {

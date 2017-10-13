@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.company.erde.superlist.Adapters.ProductRecyclerViewAdapter;
@@ -33,6 +34,10 @@ public class SelectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select);
 
+        Toolbar toolbar =  findViewById(R.id.toolbar);
+        toolbar.setTitle("Select a product: ");
+        setSupportActionBar(toolbar);
+
         realm = Realm.getDefaultInstance();
 
         recyclerView = findViewById(R.id.rvProducts);
@@ -46,6 +51,7 @@ public class SelectActivity extends AppCompatActivity {
         adapter= new ProductRecyclerViewAdapter(productData, true, new ProductRecyclerViewAdapter.RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
+                adapter.setSelect(true);
                 Product p = (Product) productData.get(position);
                 Intent intent = new Intent();
                 intent.putExtra("id", p.getId());

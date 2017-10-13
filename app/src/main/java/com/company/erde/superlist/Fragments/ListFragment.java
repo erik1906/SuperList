@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,13 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.company.erde.superlist.Activities.CreateUpdateProductActivity;
-import com.company.erde.superlist.Activities.ProductDetailsActivity;
 import com.company.erde.superlist.Activities.ProductList;
+import com.company.erde.superlist.Adapters.ListContentRecyclerViewAdapter;
 import com.company.erde.superlist.Adapters.ListRecyclerViewAdapter;
-import com.company.erde.superlist.Adapters.ProductRecyclerViewAdapter;
 import com.company.erde.superlist.R;
-import com.company.erde.superlist.RealModels.Product;
 import com.company.erde.superlist.RealModels.SuperList;
 import com.company.erde.superlist.Realm.SuperListCRUD;
 

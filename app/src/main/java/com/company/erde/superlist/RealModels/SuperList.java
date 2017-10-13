@@ -41,7 +41,7 @@ public class SuperList extends RealmObject {
         this.name = name;
     }
 
-    public RealmList<ListProducts> getProducts() {
+    public RealmList<ListProducts>  getProducts() {
         return products;
     }
 

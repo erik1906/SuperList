@@ -116,6 +116,7 @@ public class ProductFragments extends Fragment {
         adapter= new ProductRecyclerViewAdapter(productData, true, new ProductRecyclerViewAdapter.RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
+                adapter.setSelect(false);
                 Product p = (Product) productData.get(position);
                 Intent i = new Intent(getContext(), ProductDetailsActivity.class);
                 i.putExtra("id", p.getId());

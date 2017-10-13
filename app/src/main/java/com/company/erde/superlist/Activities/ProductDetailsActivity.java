@@ -3,8 +3,6 @@ package com.company.erde.superlist.Activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,11 +11,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.company.erde.superlist.R;
 import com.company.erde.superlist.RealModels.Product;
 import com.company.erde.superlist.Realm.ProductCRUD;
+import com.squareup.picasso.Picasso;
 
 import io.realm.Realm;
 
@@ -47,11 +45,16 @@ public class ProductDetailsActivity extends AppCompatActivity {
         product = ProductCRUD.select(realm, productid);
 
         tvName = findViewById(R.id.tvProductName);
-        tvPrice = findViewById(R.id.tvPrice);
+        tvPrice = findViewById(R.id.tvTotal);
         bDelete = findViewById(R.id.bDelete);
+        ivPicture = findViewById(R.id.ivPicture);
 
         tvName.setText(product.getName());
         tvPrice.setText(String.valueOf(product.getPrice()));
+
+        if(!product.getPhotoUrl().isEmpty()) {
+            Picasso.with(this).load(product.getPhotoUrl()).into(ivPicture);
+        }
 
 
         FloatingActionButton fab =  findViewById(R.id.fab);
@@ -93,7 +96,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     protected void onPostResume() {
         super.onPostResume();
         tvName = findViewById(R.id.tvProductName);
-        tvPrice = findViewById(R.id.tvPrice);
+        tvPrice = findViewById(R.id.tvTotal);
         bDelete = findViewById(R.id.bDelete);
 
         tvName.setText(product.getName());

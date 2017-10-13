@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private Realm realm;
     private FloatingActionButton fbProduct;
     private FloatingActionButton fbList;
-    private FloatingActionButton fbHistory;
     private String m_Text;
 
     @Override
@@ -54,10 +53,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         fbProduct = findViewById(R.id.fbProduct);
-        fbHistory = findViewById(R.id.fbHistory);
         fbList = findViewById(R.id.fbList);
         fbProduct.hide();
-        fbHistory.hide();
         fbList.show();
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -69,18 +66,18 @@ public class MainActivity extends AppCompatActivity {
                 switch (tab.getPosition()) {
                     case 0:
                         fbProduct.hide();
-                        fbHistory.hide();
+
                         fbList.show();
                         break;
                     case 1:
                         fbProduct.show();
-                        fbHistory.hide();
+
                         fbList.hide();
                         break;
                     case 2:
                         fbProduct.hide();
                         fbList.hide();
-                        fbHistory.show();
+
                         break;
                 }
             }
@@ -109,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 // Set up the input
                 final EditText input = new EditText(view.getContext());
                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
                 builder.setView(input);
 
                 // Set up the buttons
@@ -119,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
                         m_Text = input.getText().toString();
                         SuperList superList = new SuperList();
                         superList.setName(m_Text);
-                        superList.setTotal(0.0f);
                         SuperListCRUD.insert(realm, superList);
 
                     }
@@ -144,12 +140,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        fbHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(view.getContext(),"history float",Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void setupViewPager(ViewPager viewPager) {
