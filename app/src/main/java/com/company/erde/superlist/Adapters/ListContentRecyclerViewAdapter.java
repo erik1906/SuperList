@@ -242,7 +242,7 @@ public class ListContentRecyclerViewAdapter<contentList extends ListProducts, ro
         if(product.getPhotoUrl().equals("")) {
             Picasso.with(holder.itemView.getContext()).load(R.drawable.no_image).into(holder.ivImage);
         }else{
-            Picasso.with(holder.itemView.getContext()).load(product.getPhotoUrl()).into(holder.ivImage);
+            Picasso.with(holder.itemView.getContext()).load(product.getPhotoUrl()).resize(100,100).into(holder.ivImage);
         }
 
 

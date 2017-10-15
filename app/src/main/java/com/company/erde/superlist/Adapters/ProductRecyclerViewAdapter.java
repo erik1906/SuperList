@@ -3,6 +3,7 @@ package com.company.erde.superlist.Adapters;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -238,10 +239,13 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
         holder.name.setText(product.getName());
         holder.id.setText(Integer.toString(product.getId()));
         holder.price.setText("$"+Float.toString(product.getPrice()));
+        Log.d("steps","bind");
         if(product.getPhotoUrl().equals("")) {
-            Picasso.with(holder.itemView.getContext()).load(R.drawable.no_image).noFade().into(holder.ivImage);
+            Picasso.with(holder.itemView.getContext()).load(R.drawable.no_image)
+                    .noFade().into(holder.ivImage);
         }else{
-            Picasso.with(holder.itemView.getContext()).load(product.getPhotoUrl()).noFade().into(holder.ivImage);
+            Picasso.with(holder.itemView.getContext()).load(product.getPhotoUrl()).resize(100,100).noFade()
+                    .into(holder.ivImage);
         }
 
     }
