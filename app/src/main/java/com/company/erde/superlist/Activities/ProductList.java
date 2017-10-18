@@ -171,7 +171,7 @@ public class ProductList extends AppCompatActivity {
             case R.id.buyList:
                 Snackbar.make(this.findViewById(android.R.id.content),"Toca buy",Snackbar.LENGTH_LONG).show();
                 HistoryCRUD.insert(realm,SuperListCRUD.select(realm,superList.getId()));
-                SuperListCRUD.delete(realm,superList.getId());
+                //SuperListCRUD.delete(realm,superList.getId());
                 this.finish();
 
                 return true;
@@ -194,7 +194,7 @@ public class ProductList extends AppCompatActivity {
         switch (item.getItemId()) {
             case 0:
                 realm = Realm.getDefaultInstance();
-                SuperListCRUD.delete(realm, product.getId());
+                //SuperListCRUD.delete(realm, product.getId());
                 //Toast.makeText(getContext(),position+" Delete",Toast.LENGTH_SHORT).show();
                 break;
 

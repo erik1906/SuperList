@@ -36,7 +36,7 @@ public class HistoryCRUD {
                 History history = new History();
                 android.text.format.DateFormat df = new android.text.format.DateFormat();
                 String date = (String) df.format("yyyy-MM-dd", new Date());
-
+//comment
 
                 history.setName(superList.getName());
                 history.setProducts(superList.getProducts());
@@ -44,7 +44,8 @@ public class HistoryCRUD {
                 history.setTotal(superList.getTotal());
                 history.setDate(date);
                 history.setProductCount(superList.getProductCount());
-                realm.copyToRealm(history);
+                realm.copyToRealmOrUpdate(history)
+                        //dgdfgsdfgsdg
             }
         });
     }

@@ -245,6 +245,7 @@ public class ProductRecyclerViewAdapter<T extends RealmModel, S extends Recycler
                     .noFade().into(holder.ivImage);
         }else{
             Picasso.with(holder.itemView.getContext()).load(product.getPhotoUrl()).resize(100,100).noFade()
+
                     .into(holder.ivImage);
         }
 

@@ -12,6 +12,7 @@ import io.realm.RealmResults;
 
 public class ProductCRUD {
 
+
     public static void dropTable (Realm realm){
         realm.executeTransaction(new Realm.Transaction() {
             @Override
