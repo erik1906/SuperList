@@ -44,7 +44,7 @@ public class HistoryCRUD {
                 history.setTotal(superList.getTotal());
                 history.setDate(date);
                 history.setProductCount(superList.getProductCount());
-                realm.copyToRealmOrUpdate(history)
+                realm.copyToRealmOrUpdate(history);
                         //dgdfgsdfgsdg
             }
         });
