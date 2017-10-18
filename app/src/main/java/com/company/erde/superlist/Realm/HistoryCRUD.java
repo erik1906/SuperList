@@ -46,6 +46,7 @@ public class HistoryCRUD {
                 history.setProductCount(superList.getProductCount());
                 realm.copyToRealmOrUpdate(history);
                         //dgdfgsdfgsdg
+                // as
             }
         });
     }
